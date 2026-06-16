@@ -31,6 +31,49 @@ curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/ins
 curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- --prefix ~/.local/trade-mcp
 ```
 
+## Upgrade Instructions
+
+### Upgrading from v0.3.x or earlier
+
+```bash
+# Stop any running instances first
+pkill trade-mcp 2>/dev/null || true
+
+# Backup your database before upgrade
+/opt/trade-mcp/bin/trade-mcp << 'EOF'
+{"method":"tools/call","params":{"name":"database_backup","arguments":{"name":"pre_upgrade_0.4"}}}
+EOF
+
+# Re-run the install script to get the latest version
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash
+
+# Verify upgrade
+cat /opt/trade-mcp/VERSION
+```
+
+### Upgrading from v0.4.x (in-place upgrade)
+
+```bash
+# For minor version upgrades, just re-run install.sh
+# It will preserve your data/ directory automatically
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash
+```
+
+**What gets preserved during upgrade:**
+- ✅ `data/` directory (database + backups)
+- ✅ Customized `config/` files
+- ❌ Built-in resources/prompts/skills are overwritten with latest versions
+
+## Breaking Changes
+
+### v0.4.0 → v0.4.2
+- **Response format changed**: Tools now return MCP-standard `{"content": [{"type": "text", "text": "..."}]}` format instead of `{"result": {...}}`. This may require client updates for proper parsing.
+- **business_category enum updated**: Changed from `zero_point / angle_head / checking_fixture` to `importer / distributor / wholesaler / retailer / brand_owner / oem_manufacturer / trading_company`. Existing data with old values will still work but may need migration.
+
+### v0.3.x → v0.4.0
+- **Database backup format**: Backups are now stored in `data/backups/` instead of `backups/`
+- **Configuration location**: Config files moved from `./` to `config/` directory
+
 ## Configure your MCP client
 
 After installation, add the binary to your MCP client config:
@@ -63,7 +106,7 @@ Config file locations:
 - **Send windows**: per-country Beijing-time windows
 - **Engine-level safety**: UPDATE/DELETE without a WHERE clause is hard-blocked
 
-## Available Tools (23 total)
+## Available Tools (24 total)
 
 ### Customer (8)
 | Tool | Required Params |
@@ -89,11 +132,12 @@ Config file locations:
 | `email_record_query` | - |
 | `email_record_increment_send` | `id` |
 
-### System (4)
+### System (5)
 | Tool | Required Params |
 |------|-----------------|
 | `system_validate_email` | `email` |
 | `system_check_brand_rejection` | `company_name` |
+| `system_list_rejected_brands` | - |
 | `system_get_send_window` | - (optional: `country`) |
 | `system_get_email_limits` | - |
 
@@ -149,3 +193,30 @@ PYTHONPATH=src python src/tests/test_safety_hooks.py
 ## License
 
 MIT (binary distribution). Source code under separate terms.
+
+## Changelog
+
+### v0.4.2 (2026-06-16)
+- **MCP Protocol Compliance**: All tool responses now follow MCP standard format `{"content": [{"type": "text", "text": "..."}]}`
+- **business_category updated**: Changed to foreign trade roles: `importer`, `distributor`, `wholesaler`, `retailer`, `brand_owner`, `oem_manufacturer`, `trading_company`
+- **customer_query fixed**: Now uses case-insensitive matching for country/company_name filters
+- **MX record validation fixed**: Properly validates email domain MX records instead of silently skipping
+- **State transition errors**: Now returns clear error messages for invalid transitions (e.g., same state)
+- **New tool**: `system_list_rejected_brands()` - lists all brands in the rejection list
+- **Database timestamps**: All customer records now include `created_at` and `updated_at` fields
+
+### v0.4.1 (2026-06-16)
+- Initial release with trade-source / trade-runtime split
+- One-line installer support
+- Manifest-based versioning with sha256 verification
+
+### v0.4.0 (2026-06-16)
+- Security: Engine-level blocking of UPDATE/DELETE without WHERE clause
+- Database backup/restore/cleanup tools
+- Email send limits and send windows
+- State machine for customer status transitions
+
+### v0.3.x
+- Basic customer and email record management
+- Brand rejection list
+- Email validation
