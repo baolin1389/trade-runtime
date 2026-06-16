@@ -33,7 +33,37 @@ curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/ins
 
 ## Upgrade Instructions
 
-### Upgrading from v0.3.x or earlier
+### Using the upgrade script (recommended)
+
+```bash
+# One-line upgrade (preserves all data automatically)
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/upgrade.sh | bash
+```
+
+The upgrade script:
+- ✅ Automatically backs up your database before upgrade
+- ✅ Preserves all data in `data/` directory
+- ✅ Preserves your custom config modifications
+- ✅ Detects and stops running instances
+- ✅ Verifies sha256 of downloaded tarball
+- ✅ Creates rollback backup file
+
+**Upgrade options:**
+```bash
+# Upgrade to specific version
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/upgrade.sh | bash -s -- v0.4.2
+
+# Custom installation directory
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/upgrade.sh | bash -s -- --prefix ~/.local/trade-mcp
+
+# Skip automatic backup (if you already backed up)
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/upgrade.sh | bash -s -- --no-backup
+
+# Force reinstall same version
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/upgrade.sh | bash -s -- --force
+```
+
+### Manual upgrade from v0.3.x or earlier
 
 ```bash
 # Stop any running instances first
