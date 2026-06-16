@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # trade-mcp - one-line installer.
 #
 # Always pulls the binary tarball from the PUBLIC runtime repo
@@ -6,9 +6,9 @@
 # is never distributed to clients.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash
-#   curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash -s -- v0.4.0
-#   curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash -s -- --prefix ~/.local/trade-mcp
+#   curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- v0.4.0
+#   curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- --prefix ~/.local/trade-mcp
 #
 # Options:
 #   VERSION         Pin a specific version (defaults to whatever manifest.json
@@ -44,9 +44,9 @@ while [[ $# -gt 0 ]]; do
 trade-mcp one-line installer
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash
-  curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash -s -- v0.4.0
-  curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash -s -- --prefix ~/.local/trade-mcp
+  curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- v0.4.0
+  curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- --prefix ~/.local/trade-mcp
 
 Options:
   VERSION         Pin a specific version (default: latest from manifest.json)

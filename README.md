@@ -1,4 +1,4 @@
-# Trade-MCP - Foreign Trade CRM MCP Server
+﻿# Trade-MCP - Foreign Trade CRM MCP Server
 
 A foreign-trade customer relationship management system implemented as an
 MCP (Model Context Protocol) server. Provides tools for customer
@@ -14,7 +14,7 @@ management, email records, and database operations.
 ## One-Line Installation (recommended for AI agents)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash
 ```
 
 The script reads `manifest.json` from the public runtime repo, downloads
@@ -23,12 +23,12 @@ The script reads `manifest.json` from the public runtime repo, downloads
 
 **Pinned installation:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash -s -- v0.4.0
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- v0.4.0
 ```
 
 **Custom prefix:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/main/install.sh | bash -s -- --prefix ~/.local/trade-mcp
+curl -fsSL https://raw.githubusercontent.com/baolin1389/trade-runtime/master/install.sh | bash -s -- --prefix ~/.local/trade-mcp
 ```
 
 ## Configure your MCP client
