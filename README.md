@@ -171,12 +171,14 @@ Config file locations:
 | `system_get_send_window` | - (optional: `country`) |
 | `system_get_email_limits` | - |
 
-### Database (3)
+### Database (5)
 | Tool | Required Params |
 |------|-----------------|
 | `database_backup` | - (optional: `name`) |
 | `database_restore` | `name` |
 | `database_cleanup_backups` | - (optional: `retention_days`, `keep_count`) |
+| `database_migrate` | - |
+| `database_get_migration_status` | - |
 
 ## Business Rules
 
