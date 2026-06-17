@@ -186,6 +186,22 @@ Config file locations:
 - Restore creates a `pre_restore_*.db` safety copy before overwriting
 - Engine-level guard: any UPDATE/DELETE without WHERE is rejected
 
+### Send Window Format
+
+The `send_window` field uses **Beijing Time (UTC+8)** with the format `HH:MM-HH:MM` (24-hour format):
+
+| Format | Example | Meaning |
+|--------|---------|---------|
+| Normal | `08:00-16:00` | 08:00 to 16:00 same day |
+| Overnight | `17:00-01:00` | 17:00 to 01:00 next day (spans midnight) |
+
+**Rules:**
+- Start time `<` end time = normal window (same day)
+- Start time `>` end time = overnight window (crosses midnight)
+- Start time `=` end time = invalid (rejected)
+- Hours: 0-23, Minutes: 0-59
+- Leading zeros required (e.g. `08:00` not `8:0`)
+
 ## Runtime Directory Layout
 
 ```
