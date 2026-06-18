@@ -1,4 +1,4 @@
-﻿# Trade-MCP - Foreign Trade CRM MCP Server
+# Trade-MCP - Foreign Trade CRM MCP Server
 
 A foreign-trade customer relationship management system implemented as an
 MCP (Model Context Protocol) server. Provides tools for customer
@@ -162,7 +162,7 @@ Config file locations:
 | `email_record_query` | - |
 | `email_record_increment_send` | `id` |
 
-### System (5)
+### System (6)
 | Tool | Required Params |
 |------|-----------------|
 | `system_validate_email` | `email` |
@@ -170,6 +170,7 @@ Config file locations:
 | `system_list_rejected_brands` | - |
 | `system_get_send_window` | - (optional: `country`) |
 | `system_get_email_limits` | - |
+| `system_get_next_sendable_email` | - |
 
 ### Database (5)
 | Tool | Required Params |
