@@ -340,8 +340,11 @@ MIT (binary distribution). Source code under separate terms.
 
 ## Changelog
 
+### v0.5.2 (2026-06-18)
+- **sender_account guard strengthened**: email_record_create now requires sender_account and validates it as a proper email address format before writing. Empty, malformed, or placeholder values (e.g. "default", "sender@domain") will be rejected with a clear error. The sender account itself is managed by your business system — the MCP layer only enforces that it is a valid email format.
+
 ### v0.5.1 (2026-06-18)
-- **email_status enum enforcement**: email_record_create, email_record_update, and email_record_batch_update now validate that email_status is one of: active | bounced | done | replied. Invalid values are rejected with a clear error listing the valid options. This closes the gap where dirty data like `pending_development` could be written.
+- **email_status enum enforcement**: email_record_create, email_record_update, and email_record_batch_update now validate that email_status is one of: active | bounced | done | replied. Invalid values are rejected with a clear error listing the valid options.
 - **send_window format enforcement**: all three email write methods now validate the send_window format (HH:MM-HH:MM, leading zeros required, start ≠ end). Invalid formats are rejected before touching the database.
 - **MCP tool descriptions updated**: email_record_create/update/batch_update tool descriptions in mcp_server.py now list all enforced constraints (email_status enum, send_window format, sender_account format) so AI agents understand the rules before calling.
 
