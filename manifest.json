@@ -1,16 +1,16 @@
 {
   "product": "trade-mcp",
-  "version": "v0.4.15",
-  "bare_version": "0.4.15",
+  "version": "v0.4.16",
+  "bare_version": "0.4.16",
   "channel": "stable",
   "artifact": "runtime-last.tar.gz",
-  "size_bytes": 27044877,
-  "sha256": "c522eea3c31888c645c9a409e1c616ea22e297abd23c9411446e37911e587405",
+  "size_bytes": 27046676,
+  "sha256": "02367fc9188fe1f9ab49cec120f8cdde90a1394f28e4788b8bbea9734fb71a12",
   "source": {
     "repo": "baolin1389/trade-source",
-    "ref": "v0.4.15",
-    "sha": "b6614f2307e210df3dbf24da848e5a04112a0009"
+    "ref": "v0.4.16",
+    "sha": "d0b00e8d99feeafe340c5fcb104a2ead51f4a5bf"
   },
-  "build_time": "2026-06-18T03:10:39Z",
+  "build_time": "2026-06-18T03:25:32Z",
   "min_client_protocol": "2024-11-05"
 }
