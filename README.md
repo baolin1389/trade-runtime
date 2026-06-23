@@ -148,9 +148,10 @@ Config file locations:
 | `customer_delete` | `id` |
 | `customer_batch_update` | `ids`, `updates` |
 | `customer_query` | - |
+| `customer_stats` | - |
 | `customer_transition_status` | `id`, `new_status` |
 
-### Email Record (8)
+### Email Record (9)
 | Tool | Required Params |
 |------|-----------------|
 | `email_record_create` | `customer_id`, `company_name`, `email_address`, `sender_account` |
@@ -160,6 +161,7 @@ Config file locations:
 | `email_record_delete` | `id` |
 | `email_record_batch_update` | `ids`, `updates` |
 | `email_record_query` | - |
+| `email_record_stats` | - |
 | `email_record_increment_send` | `id` |
 
 ### System (6)
@@ -180,6 +182,63 @@ Config file locations:
 | `database_cleanup_backups` | - (optional: `retention_days`, `keep_count`) |
 | `database_migrate` | - |
 | `database_get_migration_status` | - |
+
+## Statistics & Aggregation
+
+Both `customer_stats` and `email_record_stats` provide flexible count-based
+aggregation. Use these tools whenever you need totals or group counts — they
+operate on the full dataset and are **not affected by pagination**.
+
+### Common parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `group_by` | string or list | Field(s) to group by. Omit for just a total count. |
+| `filters` | object | Field-value pairs for WHERE conditions. String values use case-insensitive exact match; prefix with `~` for `LIKE` (contains). |
+| `time_field` | string | Name of timestamp column for time-range filtering (e.g. `created_at`, `last_sent_at`). **Required** if `time_start` or `time_end` is given. |
+| `time_start` | string | Include only records >= this time (ISO datetime or `YYYY-MM-DD`). |
+| `time_end` | string | Include only records <= this time (ISO datetime or `YYYY-MM-DD`). |
+| `order_by_count` | string | `"asc"` or `"desc"` — sort groups by count. Default `"desc"`. |
+| `limit` | int | Max number of group rows to return. Default `100`. Does **not** affect the `total` count. |
+
+### Return format
+
+```json
+{
+  "success": true,
+  "total": 1234,
+  "group_count": 5,
+  "groups": [
+    {"country": "United States", "contact_status": "in_progress", "count": 456},
+    {"country": "Germany", "contact_status": "pending_development", "count": 200},
+    "..."
+  ]
+}
+```
+
+- `total` — filtered total across all groups (full dataset, not limited by `limit`).
+- `group_count` — number of groups returned (may be less than total groups if `limit` is set).
+- `groups` — one object per group, containing all `group_by` fields plus `count`.
+
+### Common use cases
+
+| Goal | Tool | Call |
+|------|------|------|
+| Total customers | `customer_stats` | `{}` |
+| Customers per country | `customer_stats` | `{"group_by": "country"}` |
+| Funnel: status distribution | `customer_stats` | `{"group_by": "contact_status"}` |
+| Country × status cross-tab | `customer_stats` | `{"group_by": ["country", "contact_status"]}` |
+| New customers this month | `customer_stats` | `{"time_field": "created_at", "time_start": "2026-06-01"}` |
+| Emails per sender account | `email_record_stats` | `{"group_by": "sender_account"}` |
+| Email status distribution | `email_record_stats` | `{"group_by": "email_status"}` |
+| Sender × status matrix | `email_record_stats` | `{"group_by": ["sender_account", "email_status"]}` |
+| Bounced emails per country | `email_record_stats` | `{"group_by": "sender_account", "filters": {"email_status": "bounced"}}` |
+
+### Error handling
+
+If `group_by`, `filters`, or `time_field` references a column that doesn't
+exist, the tool returns an error with the full list of valid column names so
+you can correct the call.
 
 ## Business Rules
 
@@ -339,6 +398,11 @@ PYTHONPATH=src python src/tests/test_safety_hooks.py
 MIT (binary distribution). Source code under separate terms.
 
 ## Changelog
+
+### v0.6.0 (2026-06-23)
+- **New tools: `customer_stats` and `email_record_stats`**: flexible aggregation / count queries that operate on the full dataset and are NOT affected by pagination. Supports single-field grouping, multi-field cross-tabulation, `filters` (exact + `~` prefix for LIKE), time-range filtering (`time_field` + `time_start`/`time_end`), and count-based sorting. Returns `{total, group_count, groups: [{..., count: N}]}`.
+- **Unified send_window_mapping source of truth**: removed the stale 7-country stub from `entities.yaml`. `config/default.yaml` is now the single source; `config/runtime.yaml` kept in sync as a runtime overrides template.
+- **Stats documented in README**: new "Statistics & Aggregation" section with parameter reference, return format, common use cases, and error handling guidance.
 
 ### v0.5.2 (2026-06-18)
 - **sender_account guard strengthened**: email_record_create now requires sender_account and validates it as a proper email address format before writing. Empty, malformed, or placeholder values (e.g. "default", "sender@domain") will be rejected with a clear error. The sender account itself is managed by your business system — the MCP layer only enforces that it is a valid email format.
