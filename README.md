@@ -135,6 +135,7 @@ Config file locations:
 - **Database backup / restore / cleanup**: stored in `data/backups/`
 - **Send windows**: per-country Beijing-time windows
 - **Engine-level safety**: UPDATE/DELETE without a WHERE clause is hard-blocked
+- **SQLCipher database encryption**: all data encrypted at rest (AES-256); transparent auto-migration from plaintext databases
 
 ## Available Tools (24 total)
 
@@ -398,6 +399,13 @@ PYTHONPATH=src python src/tests/test_safety_hooks.py
 MIT (binary distribution). Source code under separate terms.
 
 ## Changelog
+
+### v0.7.0 (2026-06-24)
+- **Database encryption (SQLCipher)**: All SQLite databases are now encrypted at rest using SQLCipher (AES-256). This prevents direct file reads of sensitive customer and email data, even if someone gains access to the database file.
+- **Transparent auto-migration**: Existing plaintext databases from v0.6.x or earlier are automatically migrated to encrypted format on first launch. The original plaintext file is renamed to `trade_crm.db.plaintext_backup_YYYYMMDD_HHMMSS` as a safety backup — you can manually delete it after confirming the migration succeeded.
+- **Encrypted backups**: `database_backup` produces encrypted backup files, so backup data is also protected.
+- **Key management**: Built-in composite key split across multiple variables (harder to extract via `strings`). Advanced users can override via the `TRADE_MCP_DB_KEY` environment variable.
+- **Zero-config upgrade**: Just upgrade normally — no action required. The migration is fully transparent and lossless.
 
 ### v0.6.0 (2026-06-23)
 - **New tools: `customer_stats` and `email_record_stats`**: flexible aggregation / count queries that operate on the full dataset and are NOT affected by pagination. Supports single-field grouping, multi-field cross-tabulation, `filters` (exact + `~` prefix for LIKE), time-range filtering (`time_field` + `time_start`/`time_end`), and count-based sorting. Returns `{total, group_count, groups: [{..., count: N}]}`.
